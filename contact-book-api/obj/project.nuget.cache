@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "0nNwZnqHtv0=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\victo\\desktop\\contactbook\\contact-book-api\\contact-book-api.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\victo\\.nuget\\packages\\microsoft.aspnetcore.openapi\\9.0.7\\microsoft.aspnetcore.openapi.9.0.7.nupkg.sha512",
+    "C:\\Users\\victo\\.nuget\\packages\\microsoft.openapi\\1.6.17\\microsoft.openapi.1.6.17.nupkg.sha512"
+  ],
+  "logs": []
+}
