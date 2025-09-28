@@ -12,5 +12,5 @@ public interface IAgendaService
     
     Task<List<AgendaModel>> GetAll();
     
-    Task<AgendaModel> Get(Guid id);
+    Task<AgendaModel> GetById(Guid id);
 }

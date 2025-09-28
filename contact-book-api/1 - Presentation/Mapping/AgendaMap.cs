@@ -9,12 +9,10 @@ public class AgendaMap
 
     public AgendaModel AgendaDtoForAgendaDomain(AgendaDto agendaDto)
     {
-        var obj = new AgendaModel()
+        return new AgendaModel
         {
-            Title = agendaDto.Title,
-            Contacts = agendaDto.Contacts,
+            Title = agendaDto.Title?.Trim() ?? string.Empty
         };
-        return obj;
     }
     
     

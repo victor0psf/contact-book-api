@@ -1,0 +1,39 @@
+﻿services:
+  db:
+    image: postgres:17
+    container_name: contactbook-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: contactbook
+      POSTGRES_USER: contactbook
+      POSTGRES_PASSWORD: contactbook_pwd
+    ports:
+      - "5432:5432"           
+    volumes:
+      - db_data:/var/lib/postgresql/data
+      - ./deploy/postgres/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U contactbook -d contactbook"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  contact-book-api:
+    image: contact-book-api
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: contactbook-api
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      ASPNETCORE_URLS: "http://0.0.0.0:8080"
+      ConnectionStrings__Default: "Host=db;Port=5432;Database=contactbook;Username=contactbook;Password=contactbook_pwd;Pooling=true;"
+    ports:
+      - "${API_PORT:-5000}:8080"
+    restart: unless-stopped
+    
+volumes:
+  db_data:
+  pgadmin_data:

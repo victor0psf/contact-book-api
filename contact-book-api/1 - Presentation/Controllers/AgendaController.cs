@@ -1,20 +1,19 @@
 ﻿using contact_book_api._1___Presentation.Dto;
 using contact_book_api._1___Presentation.Mapping;
 using contact_book_api._2___Domain.Services;
-using contact_book_api.Models;
+using contact_book_api.Interfaces.IService;
 using Microsoft.AspNetCore.Mvc;
 
-namespace contact_book_api.Controllers;
+namespace contact_book_api._1___Presentation.Controllers;
 
-public class AgendaController(AgendaService agendaService, AgendaMap agendaMap) : ControllerBase
+public class AgendaController(IAgendaService agendaService, AgendaMap agendaMap) : ControllerBase
 {
-    private readonly AgendaService _agendaService = agendaService;
-    private readonly AgendaMap _agendaMap = agendaMap;
+    private readonly IAgendaService _agendaService = agendaService;
 
     [HttpPost("AddAgenda")]
-    public async Task<IActionResult> AddAgenda(AgendaDto agendaDto)
+    public async Task<IActionResult> AddAgenda([FromBody] AgendaDto agendaDto)
     {
-        var entitieMaped = _agendaMap.AgendaDtoForAgendaDomain(agendaDto);
+        var entitieMaped = agendaMap.AgendaDtoForAgendaDomain(agendaDto);
         
          await _agendaService.Add(entitieMaped);
          
@@ -26,7 +25,7 @@ public class AgendaController(AgendaService agendaService, AgendaMap agendaMap) 
     {
         try
         {
-            var entitieMaped = _agendaMap.AgendaDtoForAgendaDomain(agendaDto);
+            var entitieMaped = agendaMap.AgendaDtoForAgendaDomain(agendaDto);
 
             var entidadeAtualizada = await _agendaService.Update(entitieMaped, id);
             
@@ -39,6 +38,52 @@ public class AgendaController(AgendaService agendaService, AgendaMap agendaMap) 
             
         }
     }
+
+    [HttpDelete("DeleteAgenda")]
+    public async Task<IActionResult> DeleteAgenda(Guid id)
+    {
+        if (id == Guid.Empty)
+        {
+            return NotFound();
+        }
+        await _agendaService.Delete(id);
+        return NoContent();
+
+    }
+
+    #region MyRegion
+
+    [HttpGet("GetById")]
+    public async Task<IActionResult> GetById(Guid id)
+    {
+        try
+        {
+            var agenda = await _agendaService.GetById(id);
+            return Ok(agenda);
+        }
+        catch
+        {
+            return StatusCode(404, "Erro ao listar registro selecionado");
+        }
+    }
+
+    
+    [HttpGet("GetAll")]
+    public async Task<IActionResult> GetAll()
+    {
+        try
+        {
+            var agendas = await _agendaService.GetAll();
+            return Ok(agendas);
+        }
+        catch
+        {
+            return StatusCode(404, "Erro ao listar registros.");
+        }
+    }
+    
+    
+    #endregion
     
     
 }

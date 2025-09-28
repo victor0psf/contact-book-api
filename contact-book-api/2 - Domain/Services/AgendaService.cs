@@ -2,6 +2,7 @@
 using contact_book_api.Interfaces.IService;
 using contact_book_api.IRepository;
 using contact_book_api.Models;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace contact_book_api._2___Domain.Services;
 
@@ -16,9 +17,9 @@ public class AgendaService : IAgendaService
     
     public async Task<AgendaModel> Add(AgendaModel agenda)
     {
-        if (string.IsNullOrEmpty(agenda.Title) || agenda.Contacts.Count == 0)
+        if (string.IsNullOrEmpty(agenda.Title))
         {
-            return null;
+            return null;//tratar mensagem de erro
         }
             
         await _agendaRepository.Add(agenda);
@@ -34,7 +35,9 @@ public class AgendaService : IAgendaService
     public Task<AgendaModel>? Update(AgendaModel agenda, Guid id)
     {
             var agendaExistente = _agendaRepository.Get(id);
-            if (agendaExistente == null) return null;
+            
+            if (agendaExistente == null) 
+                return null;
             
             _agendaRepository.Update(agenda);
             
@@ -42,18 +45,36 @@ public class AgendaService : IAgendaService
 
     }
 
-    public Task<AgendaModel> Delete(Guid id)
+    public async Task<AgendaModel?> Delete(Guid id)
     {
-        throw new NotImplementedException();
+
+        var agendaExistente = _agendaRepository.Get(id);
+        
+        if(agendaExistente == null)
+            return null;
+        
+        await  _agendaRepository.Delete(id);
+
+        return null;
     }
 
     public Task<List<AgendaModel>> GetAll()
     {
-        throw new NotImplementedException();
+        var registros =  _agendaRepository.GetAll();
+        
+        if(registros == null) 
+            return null;
+        
+        return registros;
     }
 
-    public Task<AgendaModel> Get(Guid id)
+    public Task<AgendaModel> GetById(Guid id)
     {
-        throw new NotImplementedException();
+        if (id == Guid.Empty) 
+            return null;
+        
+        var agenda = _agendaRepository.Get(id);
+        
+        return agenda;
     }
 }
