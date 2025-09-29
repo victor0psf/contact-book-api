@@ -14,34 +14,29 @@ public class AgendaService : IAgendaService
     {
         _agendaRepository = agendaRepository;
     }
-    
+
     public async Task<AgendaModel> Add(AgendaModel agenda)
     {
         if (string.IsNullOrEmpty(agenda.Title))
         {
             return null;//tratar mensagem de erro
         }
-            
+
         await _agendaRepository.Add(agenda);
         return agenda;
 
     }
 
-    public Task<AgendaModel?> Update(AgendaModel agenda)
-    {
-        throw new NotImplementedException();
-    }
-
     public Task<AgendaModel>? Update(AgendaModel agenda, Guid id)
     {
-            var agendaExistente = _agendaRepository.Get(id);
-            
-            if (agendaExistente == null) 
-                return null;
-            
-            _agendaRepository.Update(agenda);
-            
-            return  agendaExistente;
+        var agendaExistente = _agendaRepository.Get(id);
+
+        if (agendaExistente == null)
+            return null;
+
+        _agendaRepository.Update(agenda);
+
+        return agendaExistente;
 
     }
 
@@ -49,32 +44,32 @@ public class AgendaService : IAgendaService
     {
 
         var agendaExistente = _agendaRepository.Get(id);
-        
-        if(agendaExistente == null)
+
+        if (agendaExistente == null)
             return null;
-        
-        await  _agendaRepository.Delete(id);
+
+        await _agendaRepository.Delete(id);
 
         return null;
     }
 
     public Task<List<AgendaModel>> GetAll()
     {
-        var registros =  _agendaRepository.GetAll();
-        
-        if(registros == null) 
+        var registros = _agendaRepository.GetAll();
+
+        if (registros == null)
             return null;
-        
+
         return registros;
     }
 
     public Task<AgendaModel> GetById(Guid id)
     {
-        if (id == Guid.Empty) 
+        if (id == Guid.Empty)
             return null;
-        
+
         var agenda = _agendaRepository.Get(id);
-        
+
         return agenda;
     }
 }
